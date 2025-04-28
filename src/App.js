@@ -22,8 +22,6 @@ const App = () => {
 
   return (
     <div className="App">
-      <Header />
-      <Conversation response={response} />
       <VoiceInput setUserInput={setUserInput} />
     </div>
   );
