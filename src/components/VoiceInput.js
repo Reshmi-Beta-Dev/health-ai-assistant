@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const VoiceAssistant = () => {
-    const [messages, setMessages] = useState([
-        { sender: 'ai', text: "👋 Hi there! I'm your Health AI Assistant. Tap the mic and start speaking!" }
-    ]);
-    const [isListening, setIsListening] = useState(false);
-    let recognition;
+  const [messages, setMessages] = useState([
+    { sender: 'ai', text: "👋 Hi there! I'm your Health AI Assistant. Tap the mic and start speaking!" }
+  ]);
+  const [isListening, setIsListening] = useState(false);
+  const chatEndRef = useRef(null); // Reference to scroll to the bottom
+
+  let recognition;
+
+  useEffect(() => {
+    // Scroll to bottom whenever messages update
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const startListening = () => {
     if (!('webkitSpeechRecognition' in window)) {
@@ -43,14 +50,17 @@ const VoiceAssistant = () => {
   };
 
   const generateAIResponse = (userText) => {
-    // Generate a dummy AI response
-    return `🤖 (Sample OpenAI Response) You said: "${userText}".`;
+    // Simulated dummy AI response
+    return `🤖 (Sample OpenAI Response) You said: "${userText}". How can I assist you further?`;
   };
 
   return (
     <div style={styles.wrapper}>
       <div style={styles.chatContainer}>
         <h1 style={styles.title}>Health AI Assistant</h1>
+        <p style={{ textAlign: 'center', color: 'gray', fontSize: '0.9rem' }}>
+          💬 You will see sample OpenAI responses below.
+        </p>
 
         <div style={styles.chatBox}>
           {messages.map((msg, index) => (
@@ -65,6 +75,8 @@ const VoiceAssistant = () => {
               <strong>{msg.sender === 'user' ? 'You' : 'AI'}:</strong> {msg.text}
             </div>
           ))}
+          {/* This is the reference point to scroll to */}
+          <div ref={chatEndRef} />
         </div>
 
         <button 
