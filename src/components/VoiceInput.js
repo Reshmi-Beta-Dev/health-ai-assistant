@@ -5,15 +5,22 @@ const VoiceAssistant = () => {
     { sender: 'ai', text: "👋 Hi there! I'm your Health AI Assistant. Tap the mic and start speaking!" }
   ]);
   const [isListening, setIsListening] = useState(false);
-  const chatEndRef = useRef(null); // Reference to scroll to the bottom
-
+  const chatEndRef = useRef(null); // For scrolling to bottom
   let recognition;
 
+  // Function to scroll to the bottom when messages update
   useEffect(() => {
-    // Scroll to bottom whenever messages update
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // 🗣️ Function to speak text
+  const speakText = (text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // Language
+    speechSynthesis.speak(utterance);
+  };
+
+  // Start listening to user's voice
   const startListening = () => {
     if (!('webkitSpeechRecognition' in window)) {
       alert("Your browser doesn't support speech recognition. Try using Chrome.");
@@ -31,13 +38,17 @@ const VoiceAssistant = () => {
     recognition.onresult = (event) => {
       const userText = event.results[0][0].transcript;
 
-      // Add User Message
+      // Add User message
       setMessages(prevMessages => [...prevMessages, { sender: 'user', text: userText }]);
 
       // Simulate AI Response
       setTimeout(() => {
         const aiResponse = generateAIResponse(userText);
         setMessages(prevMessages => [...prevMessages, { sender: 'ai', text: aiResponse }]);
+        
+        // 🗣️ Speak the AI's response
+        speakText(aiResponse);
+
       }, 1000);
 
       setIsListening(false);
@@ -49,8 +60,8 @@ const VoiceAssistant = () => {
     };
   };
 
+  // Dummy AI response generator
   const generateAIResponse = (userText) => {
-    // Simulated dummy AI response
     return `🤖 (Sample OpenAI Response) You said: "${userText}". How can I assist you further?`;
   };
 
@@ -75,7 +86,7 @@ const VoiceAssistant = () => {
               <strong>{msg.sender === 'user' ? 'You' : 'AI'}:</strong> {msg.text}
             </div>
           ))}
-          {/* This is the reference point to scroll to */}
+          {/* Dummy div to scroll into view */}
           <div ref={chatEndRef} />
         </div>
 
