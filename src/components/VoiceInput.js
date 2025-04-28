@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
 const VoiceAssistant = () => {
-  const [messages, setMessages] = useState([]);
-  const [isListening, setIsListening] = useState(false);
-  let recognition;
+    const [messages, setMessages] = useState([
+        { sender: 'ai', text: "👋 Hi there! I'm your Health AI Assistant. Tap the mic and start speaking!" }
+    ]);
+    const [isListening, setIsListening] = useState(false);
+    let recognition;
 
   const startListening = () => {
     if (!('webkitSpeechRecognition' in window)) {
@@ -42,7 +44,7 @@ const VoiceAssistant = () => {
 
   const generateAIResponse = (userText) => {
     // Generate a dummy AI response
-    return `Thanks for sharing! How can I help you further?`;
+    return `🤖 (Sample OpenAI Response) You said: "${userText}".`;
   };
 
   return (
